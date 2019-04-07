@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 // import PropTypes from 'prop-types';
 //import { Test } from './RedditList.styles';
+import TimeAgo from 'react-timeago'
 
-class RedditList extends PureComponent { 
+class RedditList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,6 +61,11 @@ class RedditList extends PureComponent {
     console.log('RedditList will unmount');
   }
 
+  epochToDate = (utcSeconds) => {
+    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+    d.setUTCSeconds(utcSeconds);
+    return d.toLocaleDateString();
+  }
 
   render() {
     const { error, isLoaded, items } = this.state;
@@ -72,9 +78,12 @@ class RedditList extends PureComponent {
         <ul>
           {items.map(item => (
             <li key={item.data.title}>
-              {item.data.author} {item.data.created}
+              {item.data.author}
+                timeAgo:  <TimeAgo date={item.data.created * 1000 } /> 
+               <br />
               {item.data.thumbnail} {item.data.title}
-
+              <br />
+              <hr />
             </li>
           ))}
         </ul>
