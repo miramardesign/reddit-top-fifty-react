@@ -61,6 +61,11 @@ class RedditList extends React.Component {
     console.log('RedditList will unmount');
   }
 
+  onItemClick = (item) => {
+    console.log("item click called", item);
+  };
+
+
   render() {
     const { error, isLoaded, redditList } = this.state;
     if (error) {
@@ -81,7 +86,7 @@ class RedditList extends React.Component {
                   {/* [@enterAnimation] */}
 
                   <div className="row cursor-pointer" >
-                    {/* (click)="onItemClick(item)" */}
+                    {/* onClick="{onItemClick(item)}" */}
                     <div className="col-md-10">
                       <span
                         className="bluebullets">&bull;</span>
@@ -92,8 +97,10 @@ class RedditList extends React.Component {
                       </span>
                     </div>
                   </div>
-                  <div className="row align-items-center cursor-pointer">
-                    {/* // (click)="onItemClick(item)" */}
+                  <div className="row align-items-center cursor-pointer"
+                    onClick={(e) => this.onItemClick(item, e)}
+                  >
+                    {/* //  */}
 
                     <div className="col-md-5 col-sm-5 col-5">
 
@@ -106,11 +113,11 @@ class RedditList extends React.Component {
                     </div>
 
                     <div className="col-md-5 col-sm-5 col-5 cursor-pointer" >
-                      {/* (click)="onItemClick(item)" */}
+                      {/* onClick="{onItemClick(item)" */}
                       <span className="cursor-pointer"
 
                       >
-                        {/* (click)="onItemClick(item)" */}
+                        {/* onClick="{onItemClick(item)" */}
                         {item.data.title}
                       </span>
                     </div>
@@ -133,7 +140,7 @@ class RedditList extends React.Component {
                       <a
                         href="https://changeme99999999999999999999999.com"
                         className="cursor-pointer dismiss-click">
-                        {/* (click)="onDismiss(item)" */}
+                        {/* onClick="{onDismiss(item)" */}
 
                         <i className="material-icons nothing-rhymes-with-orange">
                           highlight_off
@@ -163,13 +170,13 @@ class RedditList extends React.Component {
               {/* *ngIf="redditList?.length > 0 && hiddenList?.length < 49" */}
               highlight_off
      </i> Dismiss All </a>
-          {/* (click)="onDismissAll(redditList)" */}
+          {/* onClick="{onDismissAll(redditList)" */}
           <a href="https://changeme99999999999999999999999.com"
             className="cursor-pointer nothing-rhymes-with-orange "
           ><i className="material-icons nothing-rhymes-with-orange "> highlight_off
     </i> Restore All </a>
           {/* *ngIf="redditList?.length > 0 && hiddenList?.length > 1" */}
-          {/* (click)="onRestoreAll()" */}
+          {/* onClick="{onRestoreAll()" */}
 
 
 
