@@ -1,5 +1,4 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
 import './RedditList.scss';
 
 import TimeAgo from 'react-timeago';
@@ -7,6 +6,8 @@ import TimeAgo from 'react-timeago';
 class RedditList extends React.Component {
   constructor(props) {
     super(props);
+    this.onItemClick = this.onItemClick.bind(this);
+
     this.state = {
       hasError: false,
 
@@ -23,9 +24,6 @@ class RedditList extends React.Component {
       }
 
     }
-
-
-
   }
 
   componentWillMount = () => {
@@ -81,7 +79,8 @@ class RedditList extends React.Component {
     item.data.visited = true;
     e.preventDefault();
     this.forceUpdate();
-    console.log("item click called", item);
+    this.props.onItemClick(item);
+
   };
 
   onDismiss = (item, e) => {
@@ -96,7 +95,9 @@ class RedditList extends React.Component {
   /**
    * dismiss all listings by adding them all to a list and then pushing to persistence
    */
-  onDismissAll(redditList) {
+  onDismissAll = (redditList) => {
+
+ // onDismissAll(redditList) {
     console.log('dismissAll called');
     const { hiddenList } = this.state;
 
