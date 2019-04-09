@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/Front-end/RedditTopFiftyClient/precache-manifest.0c5883032daa236eb0f318e0848c7241.js"
+  "/reddit-top-fifty-react/precache-manifest.8890335011e6341c5b30aa2ebab25448.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("/Front-end/RedditTopFiftyClient/index.html", {
+workbox.routing.registerNavigationRoute("/reddit-top-fifty-react/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
