@@ -11,7 +11,8 @@ class RedditList extends React.Component {
 
       error: null,
       isLoaded: false,
-      redditList: []
+      redditList: [],
+      hiddenList: []
     };
   }
 
@@ -61,10 +62,27 @@ class RedditList extends React.Component {
     console.log('RedditList will unmount');
   }
 
-  onItemClick = (item) => {
+  /**
+   * click events
+   */
+  onItemClick = (item, e) => {
+    e.preventDefault();
     console.log("item click called", item);
   };
 
+  onDismiss = (item, e) => {
+    item.data.hidden = true;
+    e.preventDefault();
+    console.log("item dismiss called", item);
+  };
+
+  isShown = () => {
+    return (this.redditList.length > 0) && (this.hiddenList.length < 49);
+  };
+
+  isHidden = () => {
+    return this.redditList.length > 0 && this.hiddenList.length > 1
+  };
 
   render() {
     const { error, isLoaded, redditList } = this.state;
@@ -80,103 +98,109 @@ class RedditList extends React.Component {
           <ul className="list-unstyled">
             {redditList.map(item => (
               <div key={item.data.title}>
-                <li
-                  className="nav-item">
-                  {/* *ngIf="!item?.data.hidden"  */}
-                  {/* [@enterAnimation] */}
+                hidden?????? {String(item.data.hidden )}
+                {!item.data.hidden &&
+                  <li
+                    className="nav-item">
+                    {/* [@enterAnimation] */}
 
-                  <div className="row cursor-pointer" >
-                    {/* onClick="{onItemClick(item)}" */}
-                    <div className="col-md-10">
-                      <span
-                        className="bluebullets">&bull;</span>
-                      {/* [ngClass]="{'visited': item?.data?.visited}" */}
-                      <span className="cursor-pointer"
-                      >
-                        {item.data.author} <TimeAgo date={item.data.created * 1000} />
-                      </span>
+                    <div className="row cursor-pointer"
+                       onClick={(e) => this.onItemClick(item, e)} >
+
+                      <div className="col-md-10">
+                        <span
+                          className={"bluebullets " + (item.data.visited ? 'visited' : '')}>
+
+                          &bull;</span>
+                        <span className="cursor-pointer"
+                        >
+                          {item.data.author} <TimeAgo date={item.data.created * 1000} />
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="row align-items-center cursor-pointer"
-                    onClick={(e) => this.onItemClick(item, e)}
-                  >
-                    {/* //  */}
+                    <div className="row align-items-center cursor-pointer"
+                      onClick={(e) => this.onItemClick(item, e)}
+                    >
+                      <div className="col-md-5 col-sm-5 col-5">
 
-                    <div className="col-md-5 col-sm-5 col-5">
+                        <span className="cursor-pointer"
+                        >
+                          <img src="item.data.thumbnail"
+                            alt="item.data.title" />
 
-                      <span className="cursor-pointer"
-                      >
-                        <img src="item.data.thumbnail"
-                          alt="item.data.title" />
+                        </span>
+                      </div>
 
-                      </span>
-                    </div>
+                      <div className="col-md-5 col-sm-5 col-5 cursor-pointer" >
+                        <span className="cursor-pointer" >
+                          {item.data.title}
+                        </span>
+                      </div>
+                      <div className="col-md-1 col-sm-1 col-1">
 
-                    <div className="col-md-5 col-sm-5 col-5 cursor-pointer" >
-                      {/* onClick="{onItemClick(item)" */}
-                      <span className="cursor-pointer"
+                        <div className="d-table">
+                          <span className="d-table-cell align-middle">
 
-                      >
-                        {/* onClick="{onItemClick(item)" */}
-                        {item.data.title}
-                      </span>
-                    </div>
-                    <div className="col-md-1 col-sm-1 col-1">
-
-                      <div className="d-table">
-                        <span className="d-table-cell align-middle">
-
-                          <i className="material-icons">
-                            chevron_right
+                            <i className="material-icons">
+                              chevron_right
                           </i>
+                          </span>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div className="row">
+
+                      <div className="col-md-5 col-5">
+                        <a
+                          href="#home"
+                          className="cursor-pointer dismiss-click"
+                          onClick={(e) => this.onDismiss(item, e)} >
+
+                          <i className="material-icons nothing-rhymes-with-orange">
+                            highlight_off
+                          </i>
+                          Dismiss Post </a>
+                      </div>
+                      <div className="col-md-5 col-5">
+                        <span className="nothing-rhymes-with-orange d-inline-block pull-right ml-1">
+                          {item.data.num_comments}
+                          comments
                         </span>
                       </div>
                     </div>
 
-                  </div>
-                  <div className="row">
-
-                    <div className="col-md-5 col-5">
-                      <a
-                        href="https://changeme99999999999999999999999.com"
-                        className="cursor-pointer dismiss-click">
-                        {/* onClick="{onDismiss(item)" */}
-
-                        <i className="material-icons nothing-rhymes-with-orange">
-                          highlight_off
-              </i>
-                        Dismiss Post </a>
+                    <div className="row">
+                      <div className="col-md-10 offset-md-1 bdr-btm mt-2"></div>
                     </div>
-                    <div className="col-md-5 col-5">
-                      <span className="nothing-rhymes-with-orange d-inline-block pull-right ml-1">{item.data.num_comments}
-                        comments
-              </span>
-                    </div>
-                  </div>
 
-                  <div className="row">
-                    <div className="col-md-10 offset-md-1 bdr-btm mt-2"></div>
-                  </div>
-
-                </li>
+                  </li>
+                }
               </div>
             ))}
           </ul>
 
-          <a href="https://changeme99999999999999999999999.com"
 
-            className="cursor-pointer nothing-rhymes-with-orange"
-          > <i className="material-icons nothing-rhymes-with-orange ">
-              {/* *ngIf="redditList?.length > 0 && hiddenList?.length < 49" */}
-              highlight_off
-     </i> Dismiss All </a>
-          {/* onClick="{onDismissAll(redditList)" */}
-          <a href="https://changeme99999999999999999999999.com"
-            className="cursor-pointer nothing-rhymes-with-orange "
-          ><i className="material-icons nothing-rhymes-with-orange "> highlight_off
-    </i> Restore All </a>
-          {/* *ngIf="redditList?.length > 0 && hiddenList?.length > 1" */}
-          {/* onClick="{onRestoreAll()" */}
+          {this.isShown &&
+            <a href="#home"
+              onClick={(e) => this.onDismissAll(redditList, e)}
+
+              className="cursor-pointer nothing-rhymes-with-orange">
+
+              <i className="material-icons nothing-rhymes-with-orange ">
+                highlight_off
+          </i>
+
+              Dismiss All </a>
+          }
+
+          {this.isHidden &&
+            <a href="#home"
+              onClick={(e) => this.onRestorAll(e)}
+              className="cursor-pointer nothing-rhymes-with-orange "  >
+              <i className="material-icons nothing-rhymes-with-orange "> highlight_off
+            </i> Restore All </a>
+          }
 
 
 
