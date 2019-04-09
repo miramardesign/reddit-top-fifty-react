@@ -1,6 +1,5 @@
 import React from 'react';
 import './RedditList.scss';
-import Icon from '@material-ui/core/Icon';
 
 import TimeAgo from 'react-timeago';
  
