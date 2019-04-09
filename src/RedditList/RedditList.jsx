@@ -1,5 +1,6 @@
 import React from 'react';
 import './RedditList.scss';
+import Icon from '@material-ui/core/Icon';
 
 import TimeAgo from 'react-timeago';
  
@@ -97,7 +98,6 @@ class RedditList extends React.Component {
    */
   onDismissAll = (redditList) => {
 
- // onDismissAll(redditList) {
     console.log('dismissAll called');
     const { hiddenList } = this.state;
 
@@ -203,7 +203,7 @@ class RedditList extends React.Component {
 
                             <i className="material-icons">
                               chevron_right
-                          </i>
+                            </i>
                           </span>
                         </div>
                       </div>
@@ -267,12 +267,5 @@ class RedditList extends React.Component {
   }
 }
 
-RedditList.propTypes = {
-  // bla: PropTypes.string,
-};
-
-RedditList.defaultProps = {
-  // bla: 'test',
-};
 
 export default RedditList;
