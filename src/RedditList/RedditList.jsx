@@ -1,8 +1,9 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-//import { Test } from './RedditList.styles';
-import TimeAgo from 'react-timeago'
+import './RedditList.scss';
 
+import TimeAgo from 'react-timeago';
+ 
 class RedditList extends React.Component {
   constructor(props) {
     super(props);
@@ -12,8 +13,19 @@ class RedditList extends React.Component {
       error: null,
       isLoaded: false,
       redditList: [],
-      hiddenList: []
+      hiddenList: [],
+      visitedList: []
     };
+
+    this.perist = {
+      set: (key, value) => {
+        console.log('set called todo push to localstorage!!', key, value);
+      }
+
+    }
+
+
+
   }
 
   componentWillMount = () => {
@@ -22,7 +34,7 @@ class RedditList extends React.Component {
 
   componentDidMount = () => {
     console.log('RedditList mounted');
-    const num = 20;
+    const num = 5;
     const topUrl = `https://www.reddit.com/r/all/top.json?limit=${num}`;
     fetch(topUrl)
       .then(res => res.json())
@@ -66,15 +78,60 @@ class RedditList extends React.Component {
    * click events
    */
   onItemClick = (item, e) => {
+    item.data.visited = true;
     e.preventDefault();
+    this.forceUpdate();
     console.log("item click called", item);
   };
 
   onDismiss = (item, e) => {
     item.data.hidden = true;
     e.preventDefault();
+    this.forceUpdate();
+    // this.setState({redditList: this.redditList});
     console.log("item dismiss called", item);
   };
+
+
+  /**
+   * dismiss all listings by adding them all to a list and then pushing to persistence
+   */
+  onDismissAll(redditList) {
+    console.log('dismissAll called');
+    const { hiddenList } = this.state;
+
+    redditList.forEach(item => {
+      const id = item.data.id;
+      item.data.hidden = true;
+      if (hiddenList.indexOf(id) === -1) {
+        hiddenList.push(id);
+      }
+    });
+    this.perist.set('hidden', this.hiddenList);
+    this.setState({ redditList: redditList, hiddenList: hiddenList });
+
+    this.forceUpdate();
+  }
+  /**
+   * restore all listings or we cant see them again if persisted
+   */
+  onRestoreAll() {
+    console.log('restoreAll called');
+    const { redditList } = this.state;
+
+    redditList.forEach(item => {
+      item.data.hidden = false;
+    });
+
+    this.setState({ redditList: redditList, hiddenList: [], visitedList: [] });
+
+    //todo get a persist localStorage lib
+    this.perist.set('visited', []);
+    this.perist.set('hidden', []);
+
+    this.forceUpdate();
+  }
+
 
   isShown = () => {
     return (this.redditList.length > 0) && (this.hiddenList.length < 49);
@@ -98,14 +155,16 @@ class RedditList extends React.Component {
           <ul className="list-unstyled">
             {redditList.map(item => (
               <div key={item.data.title}>
-                hidden?????? {String(item.data.hidden )}
+                {/* hidden?????? {String(item.data.hidden )} */}
+                {/* visited?????? {String(item.data.visited )} */}
+
                 {!item.data.hidden &&
                   <li
                     className="nav-item">
                     {/* [@enterAnimation] */}
 
                     <div className="row cursor-pointer"
-                       onClick={(e) => this.onItemClick(item, e)} >
+                      onClick={(e) => this.onItemClick(item, e)} >
 
                       <div className="col-md-10">
                         <span
@@ -125,7 +184,7 @@ class RedditList extends React.Component {
 
                         <span className="cursor-pointer"
                         >
-                          <img src="item.data.thumbnail"
+                          <img src={item.data.thumbnail}
                             alt="item.data.title" />
 
                         </span>
@@ -173,7 +232,6 @@ class RedditList extends React.Component {
                     <div className="row">
                       <div className="col-md-10 offset-md-1 bdr-btm mt-2"></div>
                     </div>
-
                   </li>
                 }
               </div>
@@ -196,14 +254,11 @@ class RedditList extends React.Component {
 
           {this.isHidden &&
             <a href="#home"
-              onClick={(e) => this.onRestorAll(e)}
+              onClick={(e) => this.onRestoreAll(e)}
               className="cursor-pointer nothing-rhymes-with-orange "  >
               <i className="material-icons nothing-rhymes-with-orange "> highlight_off
             </i> Restore All </a>
           }
-
-
-
         </div>
 
       );
