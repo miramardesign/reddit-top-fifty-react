@@ -118,7 +118,7 @@ class SideNav extends React.Component {
         <section>
           <div className={classes.root}>
             <CssBaseline />
-           
+
             <Drawer
               className={classes.drawer}
               variant="persistent"
@@ -128,7 +128,7 @@ class SideNav extends React.Component {
                 paper: classes.drawerPaper,
               }}
             >
-          
+
               <Divider />
               <RedditList onItemClick={this.onItemClick}>
               </RedditList>
@@ -139,8 +139,6 @@ class SideNav extends React.Component {
               })}
             >
               <div className={classes.drawerHeader} />
-               
-             
               <RedditDesc item={this.state.item}>
               </RedditDesc>
             </main>

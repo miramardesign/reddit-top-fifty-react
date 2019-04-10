@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './RedditList.scss';
 
 import TimeAgo from 'react-timeago';
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 
 class RedditList extends React.Component {
   constructor(props) {
@@ -119,16 +119,16 @@ class RedditList extends React.Component {
    */
   onDismiss = (item, e) => {
     item.data.hidden = true;
-    let hiddenList = this.state.hiddenList;
+    let { hiddenList, redditList } = this.state;
     hiddenList.push(item.data.id);
 
     this.perist.set('hiddenList', hiddenList);
     this.setState({
-      hiddenList: hiddenList
+      hiddenList: hiddenList,
+      redditList: redditList
     });
 
     e.preventDefault();
-    this.forceUpdate();
     console.log("item dismiss called", item);
   };
 
@@ -186,7 +186,6 @@ class RedditList extends React.Component {
 
   render() {
 
-    var showList = false;
     const { error, isLoaded, redditList } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -196,98 +195,92 @@ class RedditList extends React.Component {
       return (
         <div id="item-list">
 
-          <CSSTransition
-            in={this.state.in}
-            timeout={300}
-            classNames="item"
-            unmountOnExit   
-          >
-            <div> shownnnnnnnnnnnnnnnnnnnn</div>
-          </CSSTransition>
-          <button onClick={() => this.setState({in: !this.state.in}) }>Toggle Message</button>
-
           <h1 className="text-center">Reddit Posts</h1>
 
           <ul className="list-unstyled">
             {redditList.map(item => (
               <div key={item.data.title}>
 
-                {!item.data.hidden &&
-                  <li
-                    className="nav-item">
-                    {/* [@enterAnimation] */}
+                  <CSSTransition
+                    in={!item.data.hidden}
+                    timeout={500}
+                    classNames="item"
+                    unmountOnExit
+                  >
+                    <li
+                      className="nav-item">
+                    
+                      <div className="row cursor-pointer"
+                        onClick={(e) => this.onItemClick(item, e)} >
 
-                    <div className="row cursor-pointer"
-                      onClick={(e) => this.onItemClick(item, e)} >
+                        <div className="col-md-10">
+                          <span
+                            className={"bluebullets " + (item.data.visited ? 'visited' : '')}>
 
-                      <div className="col-md-10">
-                        <span
-                          className={"bluebullets " + (item.data.visited ? 'visited' : '')}>
-
-                          &bull;</span>
-                        <span className="cursor-pointer"
-                        >
-                          {item.data.author} <TimeAgo date={item.data.created * 1000} />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="row align-items-center cursor-pointer"
-                      onClick={(e) => this.onItemClick(item, e)}
-                    >
-                      <div className="col-md-5 col-sm-5 col-5">
-
-                        <span className="cursor-pointer"
-                        >
-                          <img src={item.data.thumbnail}
-                            alt="item.data.title" />
-
-                        </span>
-                      </div>
-
-                      <div className="col-md-5 col-sm-5 col-5 cursor-pointer" >
-                        <span className="cursor-pointer" >
-                          {item.data.title}
-                        </span>
-                      </div>
-                      <div className="col-md-1 col-sm-1 col-1">
-
-                        <div className="d-table">
-                          <span className="d-table-cell align-middle">
-
-                            <i className="material-icons">
-                              chevron_right
-                            </i>
+                            &bull;</span>
+                          <span className="cursor-pointer"
+                          >
+                            {item.data.author} <TimeAgo date={item.data.created * 1000} />
                           </span>
                         </div>
                       </div>
+                      <div className="row align-items-center cursor-pointer"
+                        onClick={(e) => this.onItemClick(item, e)}
+                      >
+                        <div className="col-md-5 col-sm-5 col-5">
 
-                    </div>
-                    <div className="row">
+                          <span className="cursor-pointer"
+                          >
+                            <img src={item.data.thumbnail}
+                              alt="item.data.title" />
 
-                      <div className="col-md-5 col-5">
-                        <a
-                          href="#home"
-                          className="cursor-pointer dismiss-click"
-                          onClick={(e) => this.onDismiss(item, e)} >
+                          </span>
+                        </div>
 
-                          <i className="material-icons nothing-rhymes-with-orange">
-                            highlight_off
+                        <div className="col-md-5 col-sm-5 col-5 cursor-pointer" >
+                          <span className="cursor-pointer" >
+                            {item.data.title}
+                          </span>
+                        </div>
+                        <div className="col-md-1 col-sm-1 col-1">
+
+                          <div className="d-table">
+                            <span className="d-table-cell align-middle">
+
+                              <i className="material-icons">
+                                chevron_right
+                            </i>
+                            </span>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div className="row">
+
+                        <div className="col-md-5 col-5">
+                          <a
+                            href="#home"
+                            className="cursor-pointer dismiss-click"
+                            onClick={(e) => this.onDismiss(item, e)} >
+
+                            <i className="material-icons nothing-rhymes-with-orange">
+                              highlight_off
                           </i>
-                          Dismiss Post </a>
-                      </div>
-                      <div className="col-md-5 col-5">
-                        <span className="nothing-rhymes-with-orange d-inline-block pull-right ml-1">
-                          {item.data.num_comments}
-                          comments
+                            Dismiss Post </a>
+                        </div>
+                        <div className="col-md-5 col-5">
+                          <span className="nothing-rhymes-with-orange d-inline-block pull-right ml-1">
+                            {item.data.num_comments}&nbsp;
+                            comments
                         </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="row">
-                      <div className="col-md-10 offset-md-1 bdr-btm mt-2"></div>
-                    </div>
-                  </li>
-                }
+                      <div className="row">
+                        <div className="col-md-10 offset-md-1 bdr-btm mt-2"></div>
+                      </div>
+                    </li>
+                  </CSSTransition>
               </div>
             ))}
           </ul>
@@ -319,9 +312,6 @@ class RedditList extends React.Component {
     }
   }
 
-  // render() {
-  //   return ( <section> {this.ShowList} </section>  );
-  // }
 }
 
 
