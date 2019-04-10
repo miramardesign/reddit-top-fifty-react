@@ -7,13 +7,9 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 
-const drawerWidth = 240;
+const drawerWidth = 480;
 
 const styles = theme => ({
   root: {
@@ -122,26 +118,7 @@ class SideNav extends React.Component {
         <section>
           <div className={classes.root}>
             <CssBaseline />
-            <AppBar
-              position="fixed"
-              className={classNames(classes.appBar, {
-                [classes.appBarShift]: open,
-              })}
-            >
-              <Toolbar disableGutters={!open}>
-                <IconButton
-                  color="inherit"
-                  aria-label="Open drawer"
-                  onClick={this.handleDrawerOpen}
-                  className={classNames(classes.menuButton, open && classes.hide)}
-                >
-                  <i className="material-icons">menu</i>
-                </IconButton>
-                <Typography variant="h6" color="inherit" noWrap>
-                  Reddit Posts
-                </Typography>
-              </Toolbar>
-            </AppBar>
+           
             <Drawer
               className={classes.drawer}
               variant="persistent"
@@ -151,15 +128,10 @@ class SideNav extends React.Component {
                 paper: classes.drawerPaper,
               }}
             >
-              <div className={classes.drawerHeader}>
-                <IconButton onClick={this.handleDrawerClose}>
-                  {theme.direction === 'ltr' ? <i className="material-icons">chevron_left</i> : <i className="material-icons">chevron_right</i>}
-                </IconButton>
-              </div>
-
+          
               <Divider />
               <RedditList onItemClick={this.onItemClick}>
-                </RedditList>
+              </RedditList>
             </Drawer>
             <main
               className={classNames(classes.content, {
@@ -167,23 +139,11 @@ class SideNav extends React.Component {
               })}
             >
               <div className={classes.drawerHeader} />
+               
+             
               <RedditDesc item={this.state.item}>
               </RedditDesc>
             </main>
-          </div>
-
-          <div className="SideNavWrapper">
-            <div className="App sidnav-container row">
-
-              <div className="col-md-4">
-          
-                &nbsp;
-              </div>
-
-              <div className="col-md-8" onClick={this.handleDrawerOpen}>
-                &nbsp;
-              </div>
-            </div>
           </div>
 
         </section>

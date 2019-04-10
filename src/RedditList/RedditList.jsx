@@ -8,40 +8,77 @@ class RedditList extends React.Component {
     super(props);
     this.onItemClick = this.onItemClick.bind(this);
 
+    // todo: move to redux?
+    this.perist = {
+      set(key, data) {
+        try {
+          localStorage.setItem(key, JSON.stringify(data));
+        } catch (e) {
+          console.error('Error saving to localStorage', e);
+        }
+      },
+      get(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key));
+        } catch (e) {
+          console.error('Error getting data from localStorage', e);
+          return null;
+        }
+      },
+      clear() {
+        localStorage.clear();
+      }
+    }
+
     this.state = {
       hasError: false,
 
       error: null,
       isLoaded: false,
       redditList: [],
-      hiddenList: [],
-      visitedList: []
+      hiddenList: this.perist.get('hiddenList') || [],
+      visitedList: this.perist.get('visitedList') || []
     };
 
-    this.perist = {
-      set: (key, value) => {
-        console.log('set called todo push to localstorage!!', key, value);
-      }
-
-    }
   }
 
-  componentWillMount = () => {
-    console.log('RedditList will mount');
-  }
 
   componentDidMount = () => {
     console.log('RedditList mounted');
-    const num = 5;
+    const num = 50;
     const topUrl = `https://www.reddit.com/r/all/top.json?limit=${num}`;
+    //this.hiddenList = this.perist.get('hidden') || [];
+    //this.visitedList = this.perist.get('visited') || [];
+
     fetch(topUrl)
       .then(res => res.json())
       .then(
         (result) => {
           console.log('chilidren', result.data.children);
+
+          const redditList = result.data.children;
+          const hiddenList = [];
+          const visitedList = [];
+
+          // pushed dismissed and visted into items
+          redditList.forEach(item => {
+            if (this.state.hiddenList.indexOf(item.data.id) > -1) {
+              item.data.hidden = true;
+              hiddenList.push(item.data.id);
+            }
+            if (this.state.visitedList.indexOf(item.data.id) > -1) {
+              item.data.visited = true;
+              visitedList.push(item.data.id);
+            }
+
+          });
+
+          //push the state from the load into
           this.setState({
             isLoaded: true,
-            redditList: result.data.children
+            redditList: redditList,
+            hiddenList: hiddenList,
+            visitedList: visitedList
           });
         },
         // Note: it's important to handle errors here
@@ -56,40 +93,48 @@ class RedditList extends React.Component {
       )
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    console.log('RedditList will receive props', nextProps);
-  }
-
-  componentWillUpdate = (nextProps, nextState) => {
-    console.log('RedditList will update', nextProps, nextState);
-  }
-
-  componentDidUpdate = () => {
-    console.log('RedditList did update');
-  }
-
-  componentWillUnmount = () => {
-    console.log('RedditList will unmount');
-  }
-
   /**
    * click events
    */
   onItemClick = (item, e) => {
     item.data.visited = true;
+
+    let visitedList = this.state.visitedList;
+ 
+    if(!this.isState('visitedList', item.data.id)){
+      visitedList.push(item.data.id);
+      this.perist.set('visitedList', visitedList);
+      this.setState({
+        visitedList: visitedList
+      });
+    }
+
     e.preventDefault();
     this.forceUpdate();
     this.props.onItemClick(item);
-
   };
 
+  /**
+   * dismiss item
+   */
   onDismiss = (item, e) => {
     item.data.hidden = true;
+    let hiddenList = this.state.hiddenList;
+    hiddenList.push(item.data.id);
+ 
+    this.perist.set('hiddenList', hiddenList);
+    this.setState({
+      hiddenList: hiddenList
+    });
+
     e.preventDefault();
     this.forceUpdate();
-    // this.setState({redditList: this.redditList});
     console.log("item dismiss called", item);
   };
+
+  isState = (name, id) => {
+    return this.state[name].indexOf(id) > -1;
+  }
 
 
   /**
@@ -107,7 +152,7 @@ class RedditList extends React.Component {
         hiddenList.push(id);
       }
     });
-    this.perist.set('hidden', this.hiddenList);
+    this.perist.set('hiddenList', hiddenList);
     this.setState({ redditList: redditList, hiddenList: hiddenList });
 
     this.forceUpdate();
@@ -126,12 +171,11 @@ class RedditList extends React.Component {
     this.setState({ redditList: redditList, hiddenList: [], visitedList: [] });
 
     //todo get a persist localStorage lib
-    this.perist.set('visited', []);
-    this.perist.set('hidden', []);
+    this.perist.set('visitedList', []);
+    this.perist.set('hiddenList', []);
 
     this.forceUpdate();
   }
-
 
   isShown = () => {
     return (this.redditList.length > 0) && (this.hiddenList.length < 49);
