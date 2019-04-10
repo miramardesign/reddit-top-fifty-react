@@ -184,9 +184,9 @@ class RedditList extends React.Component {
     return this.redditList.length > 0 && this.hiddenList.length > 1
   };
 
-  //ShowList = () => {
   render() {
 
+    var showList = false;
     const { error, isLoaded, redditList } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -200,15 +200,11 @@ class RedditList extends React.Component {
             in={this.state.in}
             timeout={300}
             classNames="item"
-            unmountOnExit
-         
+            unmountOnExit   
           >
             <div> shownnnnnnnnnnnnnnnnnnnn</div>
           </CSSTransition>
-          <button onClick={() => this.setState({in: false}) }>Hide Message</button>
-
-          <button onClick={() => this.setState({in: true}) }>Show Message</button>
-
+          <button onClick={() => this.setState({in: !this.state.in}) }>Toggle Message</button>
 
           <h1 className="text-center">Reddit Posts</h1>
 
