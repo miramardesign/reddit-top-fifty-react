@@ -3,54 +3,94 @@ import RedditList from '../RedditList/RedditList';
 import RedditDesc from '../RedditDesc/RedditDesc';
 
 import PropTypes from 'prop-types';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-
-// import AppBar from '@material-ui/core/AppBar';
-// import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
-// import Drawer from '@material-ui/core/Drawer';
-// import Hidden from '@material-ui/core/Hidden';
-// import IconButton from '@material-ui/core/IconButton';
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
+import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
 
-const styles = {
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: 'auto',
-  },
-};
+const drawerWidth = 240;
 
+const styles = theme => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 20,
+  },
+  hide: {
+    display: 'none',
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing.unit * 3,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  },
+});
 
 class SideNav extends React.Component {
 
   state = {
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
+    open: true,
   };
 
-  toggleDrawer = (side, open) => () => {
-    this.setState({
-      [side]: open,
-    });
+  handleDrawerOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ open: false });
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
+      open: true,
       hasError: false,
       mobileOpen: false,
       item: {
@@ -72,139 +112,76 @@ class SideNav extends React.Component {
 
   render() {
 
-
-    const { classes } = this.props;
-
-    const sideList = (
-      <div className={classes.list}>
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <Icon>inbox</Icon> : <Icon>mail</Icon>}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <Icon>inbox</Icon> : <Icon>mail</Icon>}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </div>
-    );
-
-    const fullList = (
-      <div className={classes.fullList}>
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <Icon>inbox</Icon> : <Icon>mail</Icon>}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <Icon>inbox</Icon> : <Icon>mail</Icon>}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </div>
-    );
+    const { classes, theme } = this.props;
+    const { open } = this.state;
 
     if (this.state.hasError) {
       return <h1>Something went wrong.</h1>;
     } else {
       return (
         <section>
+          <div className={classes.root}>
+            <CssBaseline />
+            <AppBar
+              position="fixed"
+              className={classNames(classes.appBar, {
+                [classes.appBarShift]: open,
+              })}
+            >
+              <Toolbar disableGutters={!open}>
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleDrawerOpen}
+                  className={classNames(classes.menuButton, open && classes.hide)}
+                >
+                  <i className="material-icons">menu</i>
+                </IconButton>
+                <Typography variant="h6" color="inherit" noWrap>
+                  Reddit Posts
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <Drawer
+              className={classes.drawer}
+              variant="persistent"
+              anchor="left"
+              open={open}
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+            >
+              <div className={classes.drawerHeader}>
+                <IconButton onClick={this.handleDrawerClose}>
+                  {theme.direction === 'ltr' ? <i className="material-icons">chevron_left</i> : <i className="material-icons">chevron_right</i>}
+                </IconButton>
+              </div>
 
-          <div>
-            <Button onClick={this.toggleDrawer('left', true)}>Open Left</Button>
-            <Button onClick={this.toggleDrawer('right', true)}>Open Right</Button>
-            <Button onClick={this.toggleDrawer('top', true)}>Open Top</Button>
-            <Button onClick={this.toggleDrawer('bottom', true)}>Open Bottom</Button>
-            <SwipeableDrawer
-              open={this.state.left}
-              onClose={this.toggleDrawer('left', false)}
-              onOpen={this.toggleDrawer('left', true)}
+              <Divider />
+              <RedditList onItemClick={this.onItemClick}>
+                </RedditList>
+            </Drawer>
+            <main
+              className={classNames(classes.content, {
+                [classes.contentShift]: open,
+              })}
             >
-              <div
-                tabIndex={0}
-                role="button"
-                onClick={this.toggleDrawer('left', false)}
-                onKeyDown={this.toggleDrawer('left', false)}
-              >
-                {sideList}
-              </div>
-            </SwipeableDrawer>
-            <SwipeableDrawer
-              anchor="top"
-              open={this.state.top}
-              onClose={this.toggleDrawer('top', false)}
-              onOpen={this.toggleDrawer('top', true)}
-            >
-              <div
-                tabIndex={0}
-                role="button"
-                onClick={this.toggleDrawer('top', false)}
-                onKeyDown={this.toggleDrawer('top', false)}
-              >
-                {fullList}
-              </div>
-            </SwipeableDrawer>
-            <SwipeableDrawer
-              anchor="bottom"
-              open={this.state.bottom}
-              onClose={this.toggleDrawer('bottom', false)}
-              onOpen={this.toggleDrawer('bottom', true)}
-            >
-              <div
-                tabIndex={0}
-                role="button"
-                onClick={this.toggleDrawer('bottom', false)}
-                onKeyDown={this.toggleDrawer('bottom', false)}
-              >
-                {fullList}
-              </div>
-            </SwipeableDrawer>
-            <SwipeableDrawer
-              anchor="right"
-              open={this.state.right}
-              onClose={this.toggleDrawer('right', false)}
-              onOpen={this.toggleDrawer('right', true)}
-            >
-              <div
-                tabIndex={0}
-                role="button"
-                onClick={this.toggleDrawer('right', false)}
-                onKeyDown={this.toggleDrawer('right', false)}
-              >
-                {sideList}
-              </div>
-            </SwipeableDrawer>
+              <div className={classes.drawerHeader} />
+              <RedditDesc item={this.state.item}>
+              </RedditDesc>
+            </main>
           </div>
-
 
           <div className="SideNavWrapper">
             <div className="App sidnav-container row">
 
               <div className="col-md-4">
-                <RedditList onItemClick={this.onItemClick}>
-
-                </RedditList>
+          
+                &nbsp;
               </div>
 
-              <div className="col-md-8">
-                <RedditDesc item={this.state.item}>
-
-                </RedditDesc>
+              <div className="col-md-8" onClick={this.handleDrawerOpen}>
+                &nbsp;
               </div>
             </div>
           </div>
