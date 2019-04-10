@@ -1,3 +1,23 @@
+Objectives:
+
+Convert the angular exercise
+https://miramardesign.github.io/Front-end/RedditTopFiftyClient/
+ to react:
+https://miramardesign.github.io/reddit-top-fifty-react/
+
+angular material becomes react material-ui
+reused material ui icons, reused most boostrap,
+
+angular material <mat-sidenav-container   became material-ui persitent drawer <Drawer
+
+angular animations became react-transition-group
+
+Angular observables became standard react fetch
+
+Changed custom angular agoPipe into a npm plugin TimeAgo as to not waste time.
+
+
+
 ## Deploy to github pages:
 npm run deploy
 

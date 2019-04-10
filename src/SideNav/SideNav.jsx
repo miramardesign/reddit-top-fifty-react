@@ -108,7 +108,7 @@ class SideNav extends React.Component {
 
   render() {
 
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     const { open } = this.state;
 
     if (this.state.hasError) {

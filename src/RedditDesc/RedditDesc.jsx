@@ -46,7 +46,9 @@ class RedditDesc extends React.Component {
       return <div>Loading...</div>;
     } else {
       return (
+     
         <div className="container" >
+        {item.data.id}
           <div className="row" >
             <div className="offset-md-1 col-md-10">
               <h1>{item.data.author}</h1>

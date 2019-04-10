@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './RedditList.scss';
 
 import TimeAgo from 'react-timeago';
- 
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+
 class RedditList extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +42,6 @@ class RedditList extends React.Component {
     };
 
   }
-
 
   componentDidMount = () => {
     console.log('RedditList mounted');
@@ -100,8 +100,8 @@ class RedditList extends React.Component {
     item.data.visited = true;
 
     let visitedList = this.state.visitedList;
- 
-    if(!this.isState('visitedList', item.data.id)){
+
+    if (!this.isState('visitedList', item.data.id)) {
       visitedList.push(item.data.id);
       this.perist.set('visitedList', visitedList);
       this.setState({
@@ -121,7 +121,7 @@ class RedditList extends React.Component {
     item.data.hidden = true;
     let hiddenList = this.state.hiddenList;
     hiddenList.push(item.data.id);
- 
+
     this.perist.set('hiddenList', hiddenList);
     this.setState({
       hiddenList: hiddenList
@@ -135,7 +135,6 @@ class RedditList extends React.Component {
   isState = (name, id) => {
     return this.state[name].indexOf(id) > -1;
   }
-
 
   /**
    * dismiss all listings by adding them all to a list and then pushing to persistence
@@ -185,7 +184,9 @@ class RedditList extends React.Component {
     return this.redditList.length > 0 && this.hiddenList.length > 1
   };
 
+  //ShowList = () => {
   render() {
+
     const { error, isLoaded, redditList } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -194,13 +195,26 @@ class RedditList extends React.Component {
     } else {
       return (
         <div id="item-list">
+
+          <CSSTransition
+            in={this.state.in}
+            timeout={300}
+            classNames="item"
+            unmountOnExit
+         
+          >
+            <div> shownnnnnnnnnnnnnnnnnnnn</div>
+          </CSSTransition>
+          <button onClick={() => this.setState({in: false}) }>Hide Message</button>
+
+          <button onClick={() => this.setState({in: true}) }>Show Message</button>
+
+
           <h1 className="text-center">Reddit Posts</h1>
 
           <ul className="list-unstyled">
             {redditList.map(item => (
               <div key={item.data.title}>
-                {/* hidden?????? {String(item.data.hidden )} */}
-                {/* visited?????? {String(item.data.visited )} */}
 
                 {!item.data.hidden &&
                   <li
@@ -308,6 +322,10 @@ class RedditList extends React.Component {
       );
     }
   }
+
+  // render() {
+  //   return ( <section> {this.ShowList} </section>  );
+  // }
 }
 
 
