@@ -2,7 +2,7 @@
   "name": "reddit-top-fifty-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://miramardesign.github.io/Front-end/RedditTopFiftyClient/",
+  "homepage": "https://miramardesign.github.io/reddit-top-fifty-react/",
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "bootstrap": "^4.3.1",
