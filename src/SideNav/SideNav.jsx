@@ -82,6 +82,19 @@ class SideNav extends React.Component {
     this.setState({ open: false });
   };
 
+  toggleIfHandset = () => {
+    console.log('toggle handset ccalled');
+    const isHandset = window.innerWidth <= 500;
+    if (isHandset) {
+      this.setState({ open: !this.state.open });
+    }
+  };
+
+  toggle = () => {
+    console.log('toggle ccalled');
+    this.setState({ open: !this.state.open });
+  };
+
   constructor(props) {
     super(props);
 
@@ -109,7 +122,7 @@ class SideNav extends React.Component {
   render() {
 
     const { classes } = this.props;
-    const { open } = this.state;
+    let { open } = this.state;
 
     if (this.state.hasError) {
       return <h1>Something went wrong.</h1>;
@@ -127,9 +140,9 @@ class SideNav extends React.Component {
               classes={{
                 paper: classes.drawerPaper,
               }}
+              onClick={this.toggleIfHandset}
             >
 
-              <Divider />
               <RedditList onItemClick={this.onItemClick}>
               </RedditList>
             </Drawer>
@@ -137,9 +150,10 @@ class SideNav extends React.Component {
               className={classNames(classes.content, {
                 [classes.contentShift]: open,
               })}
+              onClick={this.toggle}
             >
               <div className={classes.drawerHeader} />
-              <RedditDesc item={this.state.item}>
+              <RedditDesc item={this.state.item}  >
               </RedditDesc>
             </main>
           </div>
